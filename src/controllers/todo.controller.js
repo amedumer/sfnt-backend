@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Todo = require('../models/todo.model.js');
+const Todo = require('../models/todo.model');
 const User = require('../models/user.model');
 
 const getTodoByUser = async (req, res, next) => {
@@ -26,15 +26,14 @@ const getTodoByUser = async (req, res, next) => {
 };
 
 const changeTodoState = async (req, res, next) => {
-  const id = req.params.id;
+  const { id } = req.params;
 
-  //const { id } = req.body;
+  // const { id } = req.body;
 
   let todo;
   try {
     todo = await Todo.findById(id);
   } catch (err) {
-    console.log(err);
     return next(new Error('Can not find todo!', 500));
   }
 
@@ -48,7 +47,6 @@ const changeTodoState = async (req, res, next) => {
 
     await sess.endSession();
   } catch (err) {
-    console.log(err);
     return next(new Error('Todo change state failed', 500));
   }
 
@@ -71,7 +69,6 @@ const createTodo = async (req, res, next) => {
   try {
     user = await User.findById(req.user.id);
   } catch (err) {
-    console.log(err);
     return next(new Error('Place creation failed', 500));
   }
 
@@ -90,15 +87,14 @@ const createTodo = async (req, res, next) => {
 
     await sess.endSession();
   } catch (err) {
-    console.log(err);
     return next(new Error('Place creation failed', 500));
   }
 
   res.status(201).json({ todo: createdTodo.toObject({ getters: true }) });
 };
 
-const deleteTodo = async (req, res, next) => {
-  const id = req.params.id;
+const deleteTodo = async (req, res) => {
+  const { id } = req.params;
   let todo;
   try {
     todo = await Todo.findById(id).populate('creator');
@@ -120,7 +116,6 @@ const deleteTodo = async (req, res, next) => {
     });
     await sess.endSession();
   } catch (err) {
-    console.log(err);
     throw new Error('Something went wrong. Could not delete todo', 500);
   }
 
