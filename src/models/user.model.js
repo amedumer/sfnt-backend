@@ -44,6 +44,7 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    todos: [{ type: mongoose.Types.ObjectId, required: true, ref: 'Todo' }],
   },
   {
     timestamps: true,
